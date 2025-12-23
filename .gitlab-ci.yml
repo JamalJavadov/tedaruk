@@ -1,0 +1,37 @@
+stages:
+  - build
+  - test
+  - docker_build  # renamed stage
+
+variables:
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+
+before_script:
+  - apt-get update -y
+  - apt-get install -y git openjdk-17-jdk
+  - git submodule update --init --recursive
+  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+  - export PATH=$JAVA_HOME/bin:$PATH
+
+build:
+  tags:
+    - docker-ubuntu
+  stage: build
+  script:
+    - pwd
+    - ls -la
+    - ./gradlew clean build
+
+test:
+  tags:
+    - docker-ubuntu
+  stage: test
+  script:
+    - ./gradlew test
+
+docker_build:
+  tags:
+    - docker-ubuntu
+  stage: docker_build
+  script:
+    - ./gradlew jib  # builds and pushes Docker image using Jib

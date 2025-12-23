@@ -1,0 +1,114 @@
+plugins {
+    id 'org.springframework.boot' version "$springBootVersion"
+    id 'io.spring.dependency-management' version "$springDependencyManagerVersion"
+    id 'com.google.cloud.tools.jib' version '3.4.3'
+}
+
+apply from: "common/gradle/common.gradle"
+apply from: "common/gradle/jib.gradle"
+
+
+ext {
+    dockerRepoUrl = findProperty('dockerRepoUrl') ?: 'docker.io/your-namespace'
+}
+
+/* -----------------------------------------------------
+   GLOBAL GIT HELPER with timeout
+----------------------------------------------------- */
+def runGit = { String cmd ->
+    def proc = ["bash", "-c", cmd].execute()
+    def output = new StringBuffer()
+    def error = new StringBuffer()
+    proc.consumeProcessOutput(output, error)
+
+    // Wait with timeout (30 seconds)
+    def timeout = 30000
+    def startTime = System.currentTimeMillis()
+    while (proc.isAlive()) {
+        if (System.currentTimeMillis() - startTime > timeout) {
+            proc.destroyForcibly()
+            throw new GradleException("Git command timed out after 30s: $cmd")
+        }
+        Thread.sleep(100)
+    }
+
+    if (proc.exitValue() != 0) {
+        // For git describe, exit code 128 means no tags - this is OK
+        if (cmd.contains("describe") && proc.exitValue() == 128) {
+            return ""
+        }
+        def errorMsg = error.toString().trim() ?: output.toString().trim() ?: "Unknown error"
+        throw new GradleException("Git command failed: $cmd\nExit code: ${proc.exitValue()}\nError: $errorMsg")
+    }
+
+    def result = output.toString().trim()
+    if (result.isEmpty() && (cmd.contains("diff") || cmd.contains("describe"))) {
+        result = error.toString().trim()
+    }
+    return result
+}
+
+
+group = 'az.att.asan'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+dependencies {
+    implementation project(":common")
+    implementation project(":common-security")
+
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.apache.commons:commons-lang3:$apacheCommonsVersion"
+
+    implementation "org.mapstruct:mapstruct:$mapstructVersion"
+    annotationProcessor("org.mapstruct:mapstruct-processor:$mapstructVersion")
+
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation group: 'io.lettuce', name: 'lettuce-core', version: "$lettuceVersion"
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
+
+    implementation "org.modelmapper:modelmapper:$modelmapperVersion"
+
+    runtimeOnly 'org.postgresql:postgresql:42.7.3'
+
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+    implementation("org.mapstruct:mapstruct:$mapstructVersion")
+
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+}
+
+test {
+    useJUnitPlatform()
+}

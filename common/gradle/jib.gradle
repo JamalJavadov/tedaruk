@@ -1,0 +1,36 @@
+apply plugin: 'com.google.cloud.tools.jib'
+
+def platformList = ((findProperty('platforms') ?: 'amd64,arm64') as String)
+        .split(',')
+        .collect { it.trim() }
+        .findAll { it }
+
+jib {
+    from {
+        image = 'eclipse-temurin:21-jre'
+        platforms {
+            platformList.each { arch ->
+                platform { architecture = arch; os = 'linux' }
+            }
+        }
+    }
+    to {
+        def selectedTag = "latest"
+        try {
+            selectedTag = runGit("git describe --tags --abbrev=0") ?: version
+        } catch (ignored) {}
+
+        image = "git.att.az:5050/tedaruk.az/${project.name.toLowerCase()}"
+        allowInsecureRegistries = true
+        tags = [selectedTag] as Set
+
+        auth {
+            username = project.findProperty("dockerUsername")
+            password = project.findProperty("dockerPassword")
+        }
+    }
+    container {
+        jvmFlags = ['-Duser.timezone=Asia/Baku']
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+    }
+}

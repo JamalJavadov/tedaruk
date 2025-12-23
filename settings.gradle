@@ -1,0 +1,17 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'api.tedaruk.az'
+
+/* Common modules */
+include 'common'
+include 'common-security'
+
+/* Microservices */
+//include 'att-admin'
+//include 'att-asan'

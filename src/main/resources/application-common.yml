@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
+  servlet:
+    context-path: /users
+rest:
+  connect:
+    timeout: 5000
+  read:
+    timeout: 2000
+
+spring:
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 200
+  mvc:
+    pathmatch:
+      matchingStrategy: ANT_PATH_MATCHER
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: ${APP_NAME:local-usermanagment-ms}
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
+client:
+  urls:
+    ms-file: ${MS_FILE_URL:http://${webclient.base-url}:8082}
+

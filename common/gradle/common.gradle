@@ -1,0 +1,28 @@
+/* -----------------------------------------------------
+   GLOBAL VERSION HASH
+----------------------------------------------------- */
+allprojects {
+    def hash = "dev"
+    try {
+        hash = runGit("git rev-parse --short HEAD")
+    } catch (ignored) {}
+
+    version = "$projectVersion.$hash"
+
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+    }
+
+    apply plugin: 'java'
+}
+
+subprojects {
+    dependencies {
+        implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+        implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+        implementation "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+        implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    }
+}

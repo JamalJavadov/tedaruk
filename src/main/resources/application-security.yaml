@@ -1,0 +1,16 @@
+security:
+  jwtProperties:
+    secret: ${APP_SECRET_KEY:VFdGdUlHbHpJR1JwYzNScGJtZDFhWE5vWldRc0lHNXZkQ0J2Ym14NUlHSjVJR2hwY3lCeVpXRnpiMjRzSUdKMWRDQXVMaTQ9UmVhZHkgZm9yIGFkdmVudHVyZXMuIFRoZSBuZXcgUEVVR0VPVCA1MDA4IHJldmFtcHMgdGhlIG1vZGVybml0eSBvZiBpdHMgc2lsaG91ZXR0ZSwgd2l0aCBlbGVnYW5jZSBhbmQgbWF0dXJpdHksIHN0cmlraW5nIGEgcGVyZmVjdCBiYWxhbmNlIGJldHdlZW4gcG93ZXIgYW5kIHJlZmluZW1lbnQu}
+    token-validity-in-seconds: 86400
+    refresh-token-validity-in-seconds: 100000
+  cors:
+    allowed-origins: '*'
+    allowed-methods: '*'
+    allowed-headers: '*'
+    exposed-headers: 'Authorization,Link,X-Total-Count'
+    allow-credentials: true
+    max-age: 1800
+  allowed-redirect-hosts:
+    - console.ingress.academy
+    - localhost
+    - 127.0.0.1
