@@ -15,22 +15,31 @@ jib {
         }
     }
     to {
-        def selectedTag = "latest"
+        def baseVersion = version.toString()
+        def ciId = System.getenv("CI_PIPELINE_IID") ?: "local"
+        def tagPart = "notag"
+
         try {
-            selectedTag = runGit("git describe --tags --abbrev=0") ?: version
-        } catch (ignored) {}
+            def tag = runGit("git describe --tags --abbrev=0")?.trim()
+            if (tag) {
+                tagPart = tag
+            }
+        } catch (e) {
+            println "git describe failed: ${e.message}"
+        }
+
+        def fullVersion = "${baseVersion}.${ciId}.${tagPart}"
 
         image = "git.att.az:5050/tedaruk.az/${project.name.toLowerCase()}"
+        tags = [fullVersion] as Set
+
+        println "Docker image: ${image}:${fullVersion}"
+
         allowInsecureRegistries = true
-        tags = [selectedTag] as Set
 
         auth {
             username = project.findProperty("dockerUsername")
             password = project.findProperty("dockerPassword")
         }
-    }
-    container {
-        jvmFlags = ['-Duser.timezone=Asia/Baku']
-        creationTime = 'USE_CURRENT_TIMESTAMP'
     }
 }
