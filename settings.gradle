@@ -6,7 +6,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'api.tedaruk.az'
+rootProject.name = 'att-asan'
 
 /* Common modules */
 include 'common'
