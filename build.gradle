@@ -12,43 +12,6 @@ ext {
     dockerRepoUrl = findProperty('dockerRepoUrl') ?: 'docker.io/your-namespace'
 }
 
-/* -----------------------------------------------------
-   GLOBAL GIT HELPER with timeout
------------------------------------------------------ */
-def runGit = { String cmd ->
-    def proc = ["bash", "-c", cmd].execute()
-    def output = new StringBuffer()
-    def error = new StringBuffer()
-    proc.consumeProcessOutput(output, error)
-
-    // Wait with timeout (30 seconds)
-    def timeout = 30000
-    def startTime = System.currentTimeMillis()
-    while (proc.isAlive()) {
-        if (System.currentTimeMillis() - startTime > timeout) {
-            proc.destroyForcibly()
-            throw new GradleException("Git command timed out after 30s: $cmd")
-        }
-        Thread.sleep(100)
-    }
-
-    if (proc.exitValue() != 0) {
-        // For git describe, exit code 128 means no tags - this is OK
-        if (cmd.contains("describe") && proc.exitValue() == 128) {
-            return ""
-        }
-        def errorMsg = error.toString().trim() ?: output.toString().trim() ?: "Unknown error"
-        throw new GradleException("Git command failed: $cmd\nExit code: ${proc.exitValue()}\nError: $errorMsg")
-    }
-
-    def result = output.toString().trim()
-    if (result.isEmpty() && (cmd.contains("diff") || cmd.contains("describe"))) {
-        result = error.toString().trim()
-    }
-    return result
-}
-
-
 group = 'az.att.asan'
 
 configurations {

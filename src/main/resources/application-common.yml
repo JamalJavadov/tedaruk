@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
   forward-headers-strategy: framework
 
   servlet:
@@ -22,12 +22,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
   application:
-    name: ${APP_NAME:local-usermanagment-ms}
+    name: ${APP_NAME:att-asan}
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
-
-client:
-  urls:
-    ms-file: ${MS_FILE_URL:http://${webclient.base-url}:8082}
 
