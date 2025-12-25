@@ -3,7 +3,7 @@ server:
   forward-headers-strategy: framework
 
   servlet:
-    context-path: /users
+    context-path: /asan
 rest:
   connect:
     timeout: 5000
