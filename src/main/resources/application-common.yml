@@ -3,7 +3,7 @@ server:
   forward-headers-strategy: framework
 
   servlet:
-    context-path: /asan
+    context-path: /
 rest:
   connect:
     timeout: 5000
@@ -22,7 +22,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   application:
-    name: ${APP_NAME:att-asan}
+    name: ${APP_NAME:tedaruk}
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false

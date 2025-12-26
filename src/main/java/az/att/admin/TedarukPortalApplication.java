@@ -12,11 +12,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @RequiredArgsConstructor
 @EnableScheduling
 @SpringBootApplication
-public class AsanApplication implements CommandLineRunner {
+public class TedarukPortalApplication implements CommandLineRunner {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(AsanApplication.class, args);
+        SpringApplication.run(TedarukPortalApplication.class, args);
     }
 
     @Override
