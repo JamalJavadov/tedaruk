@@ -28,7 +28,8 @@ jib {
             println "git describe failed: ${e.message}"
         }
 
-        def fullVersion = "${baseVersion}.${ciId}.${tagPart}"
+        def fullVersion = "${baseVersion}.dev.${ciId}"
+
 
         image = "git.att.az:5050/tedaruk.az/${project.name.toLowerCase()}"
         tags = [fullVersion] as Set
