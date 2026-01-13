@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
+import az.att.dto.EmailVariablesDto;
 
 @Data
 @Builder
@@ -17,7 +17,7 @@ public class EmailDto {
     private String to;
     private String subject;
     private String from;
-    private Map<String, String> variables;
+    private List<EmailVariablesDto> variables;
     private EmailTemplate template;
     private List<String> fileUrls;
 }

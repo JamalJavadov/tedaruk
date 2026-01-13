@@ -24,8 +24,10 @@ import java.net.URI;
 import java.util.StringJoiner;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import org.springframework.context.annotation.Configuration;
 
 @Slf4j
+//@Configuration  // Disabled - using SecurityConfig instead
 @RequiredArgsConstructor
 public class BaseSecurityConfig {
 
@@ -39,8 +41,8 @@ public class BaseSecurityConfig {
     private final JwtAuthFilterConfigurerAdapter authFilterConfigurerAdapter;
     private final ApplicationSecurityConfig securityConfig;
 
-    @Bean
-    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    //@Bean  // Disabled - using SecurityConfig instead
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         log.trace("Initializing base security config");
         http.apply(authFilterConfigurerAdapter);
         return http.csrf(AbstractHttpConfigurer::disable)
@@ -58,9 +60,19 @@ public class BaseSecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/v3/api-docs/**", "/configuration/ui",
-                "/swagger-resources/**", "/configuration/**", "/swagger-ui/index.html",
-                "/webjars/**", "/csrf", "/", "/swagger-ui/**");
+        return (web) -> web.ignoring().requestMatchers(
+                "/v3/api-docs/**",
+                "/v2/api-docs/**",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/**",
+                "/swagger-ui.html",
+                "/swagger-ui/index.html",
+                "/webjars/**",
+                "/csrf",
+                "/",
+                "/swagger-ui/**"
+        );
     }
 
     @Bean

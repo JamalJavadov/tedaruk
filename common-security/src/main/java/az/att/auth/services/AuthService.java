@@ -1,17 +1,15 @@
 package az.att.auth.services;
 
 import org.springframework.security.core.Authentication;
-
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public interface AuthService {
 
     /**
-     * Extract authentication object out of request.
+     * Extract authentication object out of token.
      *
-     * @param httpServletRequest : the http servlet request
+     * @param token : JWT or Bearer token
      * @return : extracted Authentication
      */
-    Optional<Authentication> getAuthentication(HttpServletRequest httpServletRequest);
+    Optional<Authentication> getAuthentication(String token);
 }

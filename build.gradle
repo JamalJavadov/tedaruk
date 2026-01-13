@@ -7,21 +7,10 @@ plugins {
 apply from: "common/gradle/common.gradle"
 apply from: "common/gradle/jib.gradle"
 
-
-ext {
-    dockerRepoUrl = findProperty('dockerRepoUrl') ?: 'docker.io/your-namespace'
-}
-
 group = 'az.att.asan'
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -34,44 +23,70 @@ dependencyManagement {
     }
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 dependencies {
+
+    /* ================= CORE MODULES ================= */
     implementation project(":common")
- //   implementation project(":common-security")
+    implementation project(":common-security")
 
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
-
+    /* ================= SPRING BOOT ================= */
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
    // implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "org.apache.commons:commons-lang3:$apacheCommonsVersion"
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 
+    /* ================= LOMBOK ================= */
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    /* ================= MAPSTRUCT ================= */
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
-    annotationProcessor("org.mapstruct:mapstruct-processor:$mapstructVersion")
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
 
-    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    /* ================= CONFIG PROCESSOR ================= */
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-    implementation group: 'io.lettuce', name: 'lettuce-core', version: "$lettuceVersion"
-    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
-
+    /* ================= UTILS ================= */
+    implementation "org.apache.commons:commons-lang3:$apacheCommonsVersion"
+    implementation 'org.apache.commons:commons-text:1.10.0'
     implementation "org.modelmapper:modelmapper:$modelmapperVersion"
 
+    /* ================= JWT ================= */
+    implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    implementation "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    /* ================= OPENAPI ================= */
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
+    /* ================= REDIS ================= */
+    implementation "io.lettuce:lettuce-core:$lettuceVersion"
+
+    /* ================= DB ================= */
     runtimeOnly 'org.postgresql:postgresql:42.7.3'
+    implementation 'org.flywaydb:flyway-core'
 
+    /* ================= KAFKA ================= */
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
-    implementation("org.mapstruct:mapstruct:$mapstructVersion")
-
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-
+    /* ================= TEST ================= */
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
     useJUnitPlatform()
+}
+
+// Show unchecked warnings during compilation
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked"
 }

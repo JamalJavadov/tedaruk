@@ -1,0 +1,16 @@
+asanimza:
+  api-base-url: https://staging.tedaruk.az
+mygovid:
+  client:
+    id: 08a43ded97fa4ad4a2fde117802cad2a
+    secret: 53ab953fd1484c65a52c69a4e7624358
+  redirect:
+    uri: https://test-portal.tedaruk.az/auth/callback
+  token:
+    url: https://apitest.mygovid.gov.az/ssoauth/oauth2/token
+  resource:
+    base-url: https://apitest.mygovid.gov.az/sso-oauth-resource
+  jwks:
+    url: https://apitest.mygovid.gov.az/ssoauth/oauth2/jwks
+  base-auth-url: https://mygovid.gov.az/grant-permission
+scope: openid certificate session

@@ -1,5 +1,6 @@
 package az.att.auth.services;
 
+import az.att.auth.dto.JwtPayloadDto;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,12 +36,11 @@ public final class TokenAuthService implements AuthService {
     private final JwtService jwtService;
 
     @Override
-    public Optional<Authentication> getAuthentication(HttpServletRequest httpServletRequest) {
-        final Optional<String> header = getHeader(httpServletRequest);
-        if (header.isPresent()) {
-            return getAuthenticationBearer(header.get());
+    public Optional<Authentication> getAuthentication(String token) {
+        if (token == null || token.isBlank()) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        return getAuthenticationBearer(token);
     }
 
     private Optional<String> getHeader(HttpServletRequest httpServletRequest) {
@@ -64,16 +64,16 @@ public final class TokenAuthService implements AuthService {
     private Optional<Authentication> getAuthenticationBearer(String token) {
         log.trace("Jwt access token is : {}", token);
 
-        Claims claims = null;
+        JwtPayloadDto claims = null;
         try {
-            claims = jwtService.parseToken(token);
+            claims = jwtService.extractAllClaims(token, JwtPayloadDto.class);
         } catch (RuntimeException e) {
             //ignore
             log.warn("Exception while parsing jwt token", e);
         }
 
         log.trace("The claims parsed {}", claims);
-        if (claims == null || claims.getExpiration().before(new Date())) {
+        if (claims == null || claims.getExp() == null || claims.getExp() * 1000 < System.currentTimeMillis()) {
             return Optional.empty();
         }
         return Optional.of(getAuthenticationBearer(claims));
@@ -89,6 +89,12 @@ public final class TokenAuthService implements AuthService {
         // in case of failure
         UserPrincipal userPrincipal = new UserPrincipal(userDetails, tenantId);
         return new UsernamePasswordAuthenticationToken(userPrincipal, "", userAuthorities);
+    }
+
+    private Authentication getAuthenticationBearer(JwtPayloadDto claims) {
+        String username = claims.getSub();
+
+        return new UsernamePasswordAuthenticationToken(username, null, List.of());
     }
 
     private Collection<? extends GrantedAuthority> getUserAuthorities(Claims claims) {

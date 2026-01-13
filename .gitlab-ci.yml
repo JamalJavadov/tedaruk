@@ -1,37 +1,69 @@
+image: gradle:jdk17
+
 stages:
   - build
   - test
-  - docker_build  #
+  - docker_build
 
 variables:
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GIT_SUBMODULE_STRATEGY: recursive
+
+cache:
+  key: gradle-$CI_PROJECT_ID
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
 
 before_script:
-  - apt-get update -y
-  - apt-get install -y git openjdk-17-jdk
-  - git submodule update --init --recursive
-  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-  - export PATH=$JAVA_HOME/bin:$PATH
+  - chmod +x gradlew
 
 build:
   tags:
     - docker-ubuntu
   stage: build
   script:
-    - pwd
-    - ls -la
-    - ./gradlew clean build
+    - ./gradlew --no-daemon clean assemble -x test
 
 test:
   tags:
     - docker-ubuntu
   stage: test
+  needs: ["build"]
   script:
-    - ./gradlew test
+    - ./gradlew --no-daemon test
 
 docker_build:
   tags:
     - docker-ubuntu
   stage: docker_build
+  needs: ["test"]
+
+  before_script:
+    - chmod +x gradlew
+    - export SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-db}
+    - export SERVER_PORT=${SERVER_PORT}
+    - export CLIENT_ID=${CLIENT_ID}
+    - export CLIENT_SECRET=${CLIENT_SECRET}
+    - export REDIRECT_URI=${REDIRECT_URI}
+    - export TOKEN_URL=${TOKEN_URL}
+    - export RESOURCE_BASE=${RESOURCE_BASE}
+    - export BASE_AUTH_URL=${BASE_AUTH_URL}
+    - export UKS_URL=${UKS_URL}
+    - export ASANIMZA_API_BASE_URL=${ASANIMZA_API_BASE_URL}
+    - export APP_SECRET_KEY=${APP_SECRET_KEY}
+    - export APP_NAME=${APP_NAME}
+    - export KAFKA_BROKER_HOST_NAME=${KAFKA_BROKER_HOST_NAME}
+    - export KAFKA_BROKER_PORT=${KAFKA_BROKER_PORT}
+    - export DB_CONNECTION_IP=${DB_CONNECTION_IP}
+    - export DB_CONNECTION_PORT=${DB_CONNECTION_PORT}
+    - export DB_USERNAME=${DB_USERNAME}
+    - export DB_PASSWORD=${DB_PASSWORD}
+    - export DB_NAME=${DB_NAME}
+    - export DB_SCHEMA=${DB_SCHEMA}
   script:
-    - ./gradlew jib  # builds and pushes Docker image using Jib
+    - ./gradlew --no-daemon jib
+      -Djib.to.image=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+      -Djib.to.auth.username=$CI_REGISTRY_USER
+      -Djib.to.auth.password=$CI_REGISTRY_PASSWORD

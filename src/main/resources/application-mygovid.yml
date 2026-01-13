@@ -1,0 +1,12 @@
+mygovid:
+  client:
+    id: ${CLIENT_ID}
+    secret: ${CLIENT_SECRET}
+  redirect:
+    uri: ${REDIRECT_URI}
+  token:
+    url: ${TOKEN_URL}
+  resource:
+    base-url: ${RESOURCE_BASE}
+  jwks:
+    url: ${JWKS_URL:https://apitest.mygovid.gov.az/ssoauth/oauth2/jwks}
