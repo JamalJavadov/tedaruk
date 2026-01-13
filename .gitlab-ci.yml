@@ -2,6 +2,7 @@ image: gradle:jdk17
 
 stages:
   - build
+  - static-analysis
   - test
   - docker_build
 
@@ -25,6 +26,22 @@ build:
   stage: build
   script:
     - ./gradlew --no-daemon clean assemble -x test
+
+static-analysis:
+  tags:
+    - docker-ubuntu
+  stage: static-analysis
+  needs: ["build"]
+  script:
+    - ./gradlew --no-daemon check
+  artifacts:
+    when: always
+    paths:
+      - build/reports/checkstyle/
+      - build/reports/pmd/
+    expire_in: 1 week
+  rules:
+  - if: $CI_MERGE_REQUEST_ID  
 
 test:
   tags:
