@@ -31,7 +31,9 @@ static-analysis:
   tags:
     - docker-ubuntu
   stage: static-analysis
-  needs: ["build"]
+  needs:
+    - job: build
+      optional: true
   script:
     - ./gradlew --no-daemon check
   artifacts:
