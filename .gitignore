@@ -97,6 +97,7 @@ node_modules
 dist
 dist-ssr
 *.local
+!.env.local
 
 # Editor directories and files
 .vscode/*
@@ -122,3 +123,6 @@ Dockerfile
 !console/Dockerfile
 !website/Dockerfile
 .next
+
+.gitattributes
+.gitignore

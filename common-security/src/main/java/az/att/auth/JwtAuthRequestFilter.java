@@ -27,11 +27,22 @@ public class JwtAuthRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws IOException, ServletException {
         Optional<Authentication> authOptional = Optional.empty();
+        String token = extractToken(httpServletRequest);
         for (AuthService authService : authServices) {
-            authOptional = authOptional.or(() -> authService.getAuthentication(httpServletRequest));
+            authOptional = authOptional.or(() -> authService.getAuthentication(token));
         }
         authOptional.ifPresent(auth -> SecurityContextHolder.getContext().setAuthentication(auth));
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
+
     }
-}
+
+    private String extractToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
+    }
+    }
+

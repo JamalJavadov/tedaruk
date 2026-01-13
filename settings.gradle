@@ -12,6 +12,4 @@ rootProject.name = 'api.portal.tedaruk.az'
 include 'common'
 include 'common-security'
 
-/* Microservices */
-//include 'att-admin'
-//include 'att-asan'
+

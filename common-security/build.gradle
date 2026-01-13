@@ -22,11 +22,16 @@ jar {
 }
 
 dependencies {
-    compileOnly project(":common")
+    api project(":common")
 
-    compileOnly 'org.springframework.boot:spring-boot-starter-security'
-    compileOnly 'org.springframework.boot:spring-boot-starter-validation'
-    compileOnly 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-security'
+    api 'org.springframework.boot:spring-boot-starter-validation'
+    api 'org.springframework.boot:spring-boot-starter-web'
+
+    /* ================= JWT ================= */
+    api "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    api "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    api "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
 
     compileOnly 'org.springframework.boot:spring-boot-starter-data-jpa'
 

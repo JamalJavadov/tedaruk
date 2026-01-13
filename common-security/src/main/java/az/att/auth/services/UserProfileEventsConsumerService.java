@@ -3,10 +3,12 @@ package az.att.auth.services;
 import az.att.domain.UserEntity;
 import az.att.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@ConditionalOnBean(UserRepository.class)
 public class UserProfileEventsConsumerService {
 
     private final UserRepository userRepository;

@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import az.att.dto.ErrorResponseDto;
 import java.util.stream.Collectors;
 
 import static az.att.HttpResponseConstants.*;
@@ -41,29 +41,29 @@ public class GlobalExceptionHandler extends DefaultErrorAttributes {
     private final AbstractMessageSource messageSource;
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<Map<String, Object>> handle(ApplicationException ex,
-                                                      WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handle(ApplicationException ex,
+                                                   WebRequest request) {
         log.trace("Application exception occurred", ex);
         return ofType(request, ex.getErrorResponse().getHttpStatus(), ex);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, Object>> handle(HttpMessageNotReadableException ex,
-                                                      WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handle(HttpMessageNotReadableException ex,
+                                                  WebRequest request) {
         log.trace("Required request body is missing", ex);
         return ofType(request, HttpStatus.BAD_REQUEST, ex);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Map<String, Object>> handle(AccessDeniedException ex,
-                                                      WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handle(AccessDeniedException ex,
+                                                  WebRequest request) {
         log.trace("Access to the given resource is denied", ex);
         return ofType(request, HttpStatus.FORBIDDEN, ex);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public final ResponseEntity<Map<String, Object>> handle(ConstraintViolationException ex,
-                                                            WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handle(ConstraintViolationException ex,
+                                                        WebRequest request) {
         log.trace("Resource not found {}", ex.getMessage());
         List<ConstraintsViolationError> validationErrors = ex.getConstraintViolations()
                 .stream()
@@ -74,30 +74,30 @@ public class GlobalExceptionHandler extends DefaultErrorAttributes {
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public final ResponseEntity<Map<String, Object>> handle(MaxUploadSizeExceededException ex,
-                                                            WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handle(MaxUploadSizeExceededException ex,
+                                                        WebRequest request) {
         log.trace("Resource not found ", ex);
         return ofType(request, HttpStatus.PAYLOAD_TOO_LARGE, ex);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public final ResponseEntity<Map<String, Object>> handle(MethodArgumentTypeMismatchException ex,
-                                                            WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handle(MethodArgumentTypeMismatchException ex,
+                                                        WebRequest request) {
         log.trace("Method arguments are not valid", ex);
         return ofType(request, HttpStatus.BAD_REQUEST, ex);
     }
 
     @ExceptionHandler(MismatchedInputException.class)
-    public final ResponseEntity<Map<String, Object>> handle(MismatchedInputException ex,
-                                                            WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handle(MismatchedInputException ex,
+                                                        WebRequest request) {
         log.trace("Mismatched inout ", ex);
         return ofType(request, HttpStatus.BAD_REQUEST, ex);
     }
 
     @ExceptionHandler(BindException.class)
-    public final ResponseEntity<Map<String, Object>> handle(
-            BindException ex,
-            WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handle(
+        BindException ex,
+        WebRequest request) {
         List<ConstraintsViolationError> validationErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -108,9 +108,9 @@ public class GlobalExceptionHandler extends DefaultErrorAttributes {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public final ResponseEntity<Map<String, Object>> handle(
-            MethodArgumentNotValidException ex,
-            WebRequest request) {
+    public final ResponseEntity<ErrorResponseDto> handle(
+        MethodArgumentNotValidException ex,
+        WebRequest request) {
         log.error("Method argument not valid", ex);
         List<ConstraintsViolationError> validationErrors = ex.getBindingResult()
                 .getFieldErrors()
@@ -122,38 +122,38 @@ public class GlobalExceptionHandler extends DefaultErrorAttributes {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handle(Exception ex,
-                                                      WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handle(Exception ex,
+                                                  WebRequest request) {
         log.error("Server failure", ex);
         return ofType(request, HttpStatus.INTERNAL_SERVER_ERROR, ex);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, Object>> handle(BadCredentialsException ex,
-                                                      WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handle(BadCredentialsException ex,
+                                                  WebRequest request) {
         log.error("Bad credentials");
         return ofType(request, HttpStatus.UNAUTHORIZED, ex);
     }
 
-    protected ResponseEntity<Map<String, Object>> ofType(WebRequest request,
-                                                         HttpStatus status, ApplicationException ex) {
+    protected ResponseEntity<ErrorResponseDto> ofType(WebRequest request,
+                                                     HttpStatus status, ApplicationException ex) {
         Locale locale = LocaleContextHolder.getLocale();
-        return ofType(request, status, ex.getLocalizedMessage(locale, messageSource), Collections.EMPTY_LIST);
+        return ofType(request, status, ex.getLocalizedMessage(locale, messageSource));
     }
 
-    protected ResponseEntity<Map<String, Object>> ofType(WebRequest request, HttpStatus status, Exception ex) {
-        return ofType(request, status, getLocalizedMessage(ex), Collections.EMPTY_LIST);
+    protected ResponseEntity<ErrorResponseDto> ofType(WebRequest request, HttpStatus status, Exception ex) {
+        return ofType(request, status, getLocalizedMessage(ex));
     }
 
-    private ResponseEntity<Map<String, Object>> ofType(WebRequest request, HttpStatus status, String message,
-                                                       List validationErrors) {
-        Map<String, Object> attributes = getErrorAttributes(request, ErrorAttributeOptions.defaults());
-        attributes.put(STATUS, status.value());
-        attributes.put(ERROR, getLocalizedReasonPhrase(status));
-        attributes.put(MESSAGE, message);
-        attributes.put(ERRORS, validationErrors);
-        attributes.put(PATH, ((ServletWebRequest) request).getRequest().getRequestURI());
-        return new ResponseEntity<>(attributes, status);
+    private ResponseEntity<ErrorResponseDto> ofType(WebRequest request, HttpStatus status, String message) {
+        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+        ErrorResponseDto errorResponse = ErrorResponseDto.builder()
+                .status(status.value())
+                .error(getLocalizedReasonPhrase(status))
+                .message(message)
+                .path(path)
+                .build();
+        return new ResponseEntity<>(errorResponse, status);
     }
 
     private String getLocalizedMessage(Exception ex) {
@@ -175,6 +175,18 @@ public class GlobalExceptionHandler extends DefaultErrorAttributes {
             log.warn("Please consider adding localized message for key {} and locale {}", status.value(), locale);
         }
         return status.getReasonPhrase();
+    }
+
+    private ResponseEntity<ErrorResponseDto> ofType(WebRequest request, HttpStatus status, String message, List<ConstraintsViolationError> validationErrors) {
+        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+        ErrorResponseDto errorResponse = ErrorResponseDto.builder()
+                .status(status.value())
+                .error(getLocalizedReasonPhrase(status))
+                .message(message)
+                .path(path)
+                .validationErrors(validationErrors)
+                .build();
+        return new ResponseEntity<>(errorResponse, status);
     }
 }
 

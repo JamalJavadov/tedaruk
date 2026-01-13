@@ -1,11 +1,12 @@
 spring:
   profiles:
-    active: local
+    active: ${SPRING_PROFILES_ACTIVE:local}
     include:
       - common
       - db
       - security
       - dateLocalization
       - kafka
+      - mygovid
 
 
