@@ -49,9 +49,19 @@ static-analysis:
     - job: build
       optional: true
   script:
-    - ./gradlew --no-daemon check
+    # 1️⃣ Run full checks with readable console output, no daemon
+    - ./gradlew --no-daemon check --console=plain --warning-mode=all
+    # 2️⃣ Ensure PMD XML exists for UI integration
+    - ./gradlew --no-daemon pmdMain
+    # 3️⃣ Convert PMD XML → Code Climate JSON (for MR UI)
+    - curl -s https://raw.githubusercontent.com/pmd/pmd/master/pmd-cli/src/main/resources/pmd2codeclimate.xsl \
+        -o pmd2codeclimate.xsl
+    - xsltproc pmd2codeclimate.xsl build/reports/pmd/pmdMain.xml \
+        > gl-code-quality-report.json
   artifacts:
     when: always
+    reports:
+      codequality: gl-code-quality-report.json
     paths:
       - build/reports/checkstyle/
       - build/reports/pmd/
