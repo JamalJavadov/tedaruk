@@ -54,10 +54,8 @@ static-analysis:
     # 2️⃣ Ensure PMD XML exists for UI integration
     - ./gradlew --no-daemon pmdMain
     # 3️⃣ Convert PMD XML → Code Climate JSON (for MR UI)
-    - curl -s https://raw.githubusercontent.com/pmd/pmd/master/pmd-cli/src/main/resources/pmd2codeclimate.xsl \
-        -o pmd2codeclimate.xsl
-    - xsltproc pmd2codeclimate.xsl build/reports/pmd/pmdMain.xml \
-        > gl-code-quality-report.json
+    - curl -s -o pmd2codeclimate.xsl https://raw.githubusercontent.com/pmd/pmd/master/pmd-cli/src/main/resources/pmd2codeclimate.xsl
+    - xsltproc pmd2codeclimate.xsl build/reports/pmd/pmdMain.xml > gl-code-quality-report.json
   artifacts:
     when: always
     reports:
