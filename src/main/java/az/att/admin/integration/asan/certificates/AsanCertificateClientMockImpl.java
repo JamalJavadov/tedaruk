@@ -1,8 +1,7 @@
 package az.att.admin.integration.asan.certificates;
 
-import az.att.admin.dto.LoginDetailDto;
+import az.att.admin.integration.asan.certificates.dto.LoginDetailDto;
 import az.att.admin.integration.asan.certificates.dto.AsanCertificatesResponseDto;
-import az.att.admin.integration.asan.certificates.dto.CertificateData;
 import az.att.admin.integration.asan.certificates.dto.CertificateDto;
 import az.att.admin.integration.asan.login.dto.StructureDataDto;
 import lombok.RequiredArgsConstructor;
@@ -18,27 +17,62 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AsanCertificateClientMockImpl implements AsanCertificatesClient {
 
-    @Override
-    public AsanCertificatesResponseDto getCertificates(String accessToken) {
-        StructureDataDto structureData = StructureDataDto.builder()
-                .voen("123456789")
-                .structureName("Test Company LLC")
-                .position("Manager")
-                .hasStamp(true)
-                .legal(true)
-                .build();
+        @Override
+        public AsanCertificatesResponseDto getCertificates(String accessToken) {
 
-        CertificateDto certificateDto = CertificateDto.builder()
-                .structureData(structureData)
-                .build();
+                StructureDataDto structureData1 = StructureDataDto.builder()
+                                .voen("1001101112")
+                                .structureName("ABC Şirkəti MMC")
+                                .position("Direktor")
+                                .hasStamp(true)
+                                .legal(true)
+                                .certificateNumber("10000001")
+                                .build();
 
-        LoginDetailDto loginDetail = LoginDetailDto.builder()
-                .phoneNumber("+1234567890")
-                .build();
+                StructureDataDto structureData2 = StructureDataDto.builder()
+                                .voen("1001101113")
+                                .structureName("XYZ Məhsulları LTD")
+                                .position("Mənədr")
+                                .hasStamp(true)
+                                .legal(true)
+                                .certificateNumber("100000002")
+                                .build();
 
-        return AsanCertificatesResponseDto.builder()
-                .loginDetail(loginDetail)
-                .certificates(List.of(certificateDto))
-                .build();
-    }
+                StructureDataDto structureData3 = StructureDataDto.builder()
+                                .voen("1001101114")
+                                .structureName("QEYD Servis Şirkəti")
+                                .position("Mütəxəssis")
+                                .hasStamp(false)
+                                .legal(true)
+                                .certificateNumber("100000003")
+                                .build();
+
+                StructureDataDto structureData4 = StructureDataDto.builder()
+                                .voen("1001101115")
+                                .structureName("Test İstehsalat MMC")
+                                .position("Baş mütəxəssis")
+                                .hasStamp(true)
+                                .legal(true)
+                                .certificateNumber("100000004")
+                                .build();
+
+                List<CertificateDto> certificates = List.of(
+                                CertificateDto.builder().structureData(structureData1).certificateNumber("10000001")
+                                                .build(),
+                                CertificateDto.builder().structureData(structureData2).certificateNumber("100000002")
+                                                .build(),
+                                CertificateDto.builder().structureData(structureData3).certificateNumber("100000003")
+                                                .build(),
+                                CertificateDto.builder().structureData(structureData4).certificateNumber("100000004")
+                                                .build());
+
+                LoginDetailDto loginDetail = LoginDetailDto.builder()
+                                .phoneNumber("+994551234567")
+                                .build();
+
+                return AsanCertificatesResponseDto.builder()
+                                .loginDetail(loginDetail)
+                                .certificates(certificates)
+                                .build();
+        }
 }

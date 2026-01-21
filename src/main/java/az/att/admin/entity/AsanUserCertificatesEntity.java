@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "asan_user_certificates", schema = "att_user_db",
-    uniqueConstraints = @UniqueConstraint(name = "uk_user_voen", columnNames = {"user_login_id", "voen"})
+        uniqueConstraints = @UniqueConstraint(name = "uk_user_voen", columnNames = {"user_login_id", "voen"})
 )
 @Getter
 @Setter
@@ -35,13 +35,10 @@ public class AsanUserCertificatesEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_login_id", nullable = false)
-    private AsanUserEntity asanUser;
+    private PortalUserEntity asanUser;
 
-    @Column(name = "thumbprint")
-    private String thumbprint;
-
-    @Column(name = "serial_number")
-    private String serialNumber;
+    @Column(name = "certificat_number")
+    private String certificateNumber;
 
     @Column(name = "has_stamp")
     private Boolean hasStamp;
@@ -50,7 +47,7 @@ public class AsanUserCertificatesEntity {
     private Boolean legal;
 
     @Column(name = "voen")
-    private String voen;
+    private String tin;
 
     @Column(name = "structure_name")
     private String structureName;

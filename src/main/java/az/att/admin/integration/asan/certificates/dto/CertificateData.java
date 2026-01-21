@@ -13,4 +13,5 @@ public class CertificateData {
     private final String position;
     private final Boolean hasStamp;
     private final Boolean legal;
+    private final String certificateNumber;
 }

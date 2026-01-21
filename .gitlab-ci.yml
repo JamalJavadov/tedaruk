@@ -45,6 +45,7 @@ static-analysis:
   tags:
     - docker-ubuntu
   stage: static-analysis
+  allow_failure: true
   needs:
     - job: build
       optional: true

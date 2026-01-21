@@ -10,6 +10,5 @@ rootProject.name = 'api.portal.tedaruk.az'
 
 /* Common modules */
 include 'common'
-include 'common-security'
 
 
