@@ -19,4 +19,7 @@ public class AsanLoginResponse {
 
     @JsonProperty("id_token")
     private String idToken;
+
+    @JsonProperty("loginDetail")
+    private LoginDetailDto loginDetail;
 }

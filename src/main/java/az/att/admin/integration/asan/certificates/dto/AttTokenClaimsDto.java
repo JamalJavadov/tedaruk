@@ -1,19 +1,20 @@
 package az.att.admin.integration.asan.certificates.dto;
 
-import az.att.admin.integration.asan.login.dto.StructureDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import az.att.auth.dto.UserJwtDto;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AttTokenClaimsDto {
+
+    private String userId;
+    private String pin;
+    private String firstName;
+    private String lastName;
     private String sub;
-    private UserJwtDto user;
-    private Boolean isActive;
-    private String role;
-    private String voen;
-    private String phoneNumber;
-    private StructureDto structure;
+    private String tin;
 }

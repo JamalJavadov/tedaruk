@@ -1,9 +1,9 @@
 package az.att.admin.integration.asan.login;
 
 import az.att.admin.integration.asan.certificates.dto.AsanLoginRequest;
+import az.att.admin.integration.asan.login.dto.AsanJwtResponse;
 import az.att.admin.integration.asan.login.dto.AsanLoginResponse;
-import az.att.auth.dto.JwtPayloadDto;
-import az.att.auth.dto.UserJwtDto;
+import az.att.admin.integration.asan.login.dto.UserJwtDto;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +25,16 @@ public class AsanAuthClientMockImpl implements AsanAuthClient {
     }
 
     @Override
-    public JwtPayloadDto parseToken(AsanLoginResponse asanLoginResponse) {
-        return JwtPayloadDto.builder()
+    public AsanJwtResponse parseToken(AsanLoginResponse asanLoginResponse) {
+        return AsanJwtResponse.builder()
                 .sub("123456789")
                 .user(UserJwtDto.builder()
-                        .pin("AA1234567")
-                        .name("John")
-                        .surname("Doe")
-                        .patronymic("Michael")
-                        .citizenship("US")
+                        .pin("525GRGH")
+                        .firstName("Ilham")
+                        .lastName("Safarov")
+                        .patronymic("Habil")
+                        .citizenship("Aze")
+                        .phone("0516004145")
                         .build())
                 .iat(Instant.now().getEpochSecond())
                 .exp(Instant.now().plus(1, ChronoUnit.DAYS).getEpochSecond())

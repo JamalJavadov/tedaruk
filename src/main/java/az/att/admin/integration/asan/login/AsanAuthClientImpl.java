@@ -1,9 +1,9 @@
 package az.att.admin.integration.asan.login;
 
 import az.att.admin.integration.asan.certificates.dto.AsanLoginRequest;
+import az.att.admin.integration.asan.login.dto.AsanJwtResponse;
 import az.att.admin.integration.asan.login.dto.AsanLoginResponse;
-import az.att.auth.dto.JwtPayloadDto;
-import az.att.auth.services.JwtService;
+import az.att.admin.integration.asan.login.jwt.AsanJwtService;
 import az.att.exception.ApplicationException;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -31,7 +35,7 @@ public class AsanAuthClientImpl implements AsanAuthClient {
 
     private final RestTemplate restTemplate;
 
-    private final JwtService jwtService;
+    private final AsanJwtService jwtService;
 
     @Value("${mygovid.client.id}")
     private String clientId;
@@ -55,11 +59,11 @@ public class AsanAuthClientImpl implements AsanAuthClient {
         return asanLoginResponse;
     }
 
-    public JwtPayloadDto parseToken(AsanLoginResponse asanLoginResponse) {
+    public AsanJwtResponse parseToken(AsanLoginResponse asanLoginResponse) {
         try {
             String jwksJson = getJwksJson();
             Claims claims = jwtService.verifyJwt(asanLoginResponse.getIdToken(), jwksJson);
-            return jwtService.convertClaimsToDto(claims, JwtPayloadDto.class);
+            return jwtService.convertClaimsToDto(claims, AsanJwtResponse.class);
         } catch (Exception e) {
             log.error("Failed to verify id_token", e);
             throw new ApplicationException(HTTP_401, e);
@@ -71,8 +75,8 @@ public class AsanAuthClientImpl implements AsanAuthClient {
             throw new IllegalArgumentException("Asan auth code is null or blank");
         }
         HttpEntity<?> request = new HttpEntity<>(buildRequestBody(authCode), buildRequestHeaders());
-        ResponseEntity<AsanLoginResponse> response =
-                restTemplate.exchange(tokenUrl, HttpMethod.POST, request, AsanLoginResponse.class);
+        ResponseEntity<AsanLoginResponse> response = restTemplate.exchange(tokenUrl, HttpMethod.POST, request,
+                AsanLoginResponse.class);
         return response.getBody();
     }
 
