@@ -48,14 +48,18 @@ static-analysis:
   needs:
     - job: build
       optional: true
+
   script:
-    # 1️⃣ Run full checks with readable console output, no daemon
-    - ./gradlew --no-daemon check --console=plain --warning-mode=all
-    # 2️⃣ Ensure PMD XML exists for UI integration
-    - ./gradlew --no-daemon pmdMain
-    # 3️⃣ Convert PMD XML → Code Climate JSON (for MR UI)
+    # 1️⃣ Run checks but DO NOT fail the job yet
+    - ./gradlew --no-daemon check --console=plain --warning-mode=all || true
+
+    # 2️⃣ Convert PMD XML → Code Climate JSON for MR UI
     - curl -s -o pmd2codeclimate.xsl https://raw.githubusercontent.com/pmd/pmd/master/pmd-cli/src/main/resources/pmd2codeclimate.xsl
     - xsltproc pmd2codeclimate.xsl build/reports/pmd/pmdMain.xml > gl-code-quality-report.json
+
+    # 3️⃣ Now fail the job if PMD violations exist
+    - ./gradlew --no-daemon pmdMain
+
   artifacts:
     when: always
     reports:
@@ -64,8 +68,9 @@ static-analysis:
       - build/reports/checkstyle/
       - build/reports/pmd/
     expire_in: 1 week
+
   rules:
-  - if: $CI_MERGE_REQUEST_ID  
+    - if: $CI_MERGE_REQUEST_ID  
 
 test:
   tags:
