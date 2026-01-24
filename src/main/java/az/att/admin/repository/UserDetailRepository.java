@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface UserDetailRepository extends JpaRepository<AsanUserCertificatesEntity, UUID> {
 
     Optional<AsanUserCertificatesEntity> findByAsanUserAndTin(PortalUserEntity asanUser, String tin);
+    Optional<AsanUserCertificatesEntity> findByAsanUser_IdAndTin(UUID userId, String tin);
 
 }
 
