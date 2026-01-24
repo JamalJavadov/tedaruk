@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Profile("local")
+@Profile("test")
 public class UserRoleServiceMockImpl implements UserRoleService {
 
     @Override
@@ -18,6 +18,6 @@ public class UserRoleServiceMockImpl implements UserRoleService {
 
     @Override
     public List<String> findPermissions(Long roleId) {
-        return List.of("PERMISSION_1");
+        return List.of("VIEW_SETTINGS");
     }
 }

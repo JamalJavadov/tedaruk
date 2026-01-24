@@ -110,6 +110,9 @@ dist-ssr
 *.sln
 *.sw?
 
+#yml
+application-dblocal.yml
+
 # Node build outputs
 node_modules
 
