@@ -5,6 +5,11 @@ def platformList = ((findProperty('platforms') ?: 'amd64,arm64') as String)
         .collect { it.trim() }
         .findAll { it }
 
+jib {
+  allowInsecureRegistries = true
+}
+
+
 //jib {
 //    from {
 //        image = 'eclipse-temurin:21-jre'
