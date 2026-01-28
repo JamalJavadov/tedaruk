@@ -152,4 +152,6 @@ public class UserRoleServiceImpl implements UserRoleService {
     private PortalUserRole toPortalUserRole(UserRole userRole) {
         return new PortalUserRole(userRole.getId(), userRole.getRole().getName());
     }
+
+
 }

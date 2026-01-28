@@ -120,6 +120,9 @@ public class JwtTokenServiceImpl implements JwtTokenService {
             if (userPrincipal.getTin() != null) {
                 claimsMap.put(JwtClaims.TIN, userPrincipal.getTin());
             }
+            if (userPrincipal.getHasStamp() != null) {
+                claimsMap.put(JwtClaims.HAS_STAMP, userPrincipal.getHasStamp());
+            }
         }
 
         return claimsMap;
@@ -133,6 +136,7 @@ public class JwtTokenServiceImpl implements JwtTokenService {
                 .lastName(claims.get(JwtClaims.LAST_NAME, String.class))
                 .tin(claims.get(JwtClaims.TIN, String.class))
                 .permissions(claims.get(JwtClaims.PERMISSIONS, List.class))
+                .hasStamp(claims.get(JwtClaims.HAS_STAMP, Boolean.class))
                 .build();
     }
 }

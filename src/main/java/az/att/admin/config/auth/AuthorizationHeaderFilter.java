@@ -44,7 +44,8 @@ public class AuthorizationHeaderFilter extends OncePerRequestFilter {
                     List<GrantedAuthority> grantedAuthorities = List.of();
                     if (userPrincipal.getPermissions() != null) {
                         grantedAuthorities = userPrincipal.getPermissions().stream()
-                                .map(p -> (GrantedAuthority) () -> p).toList();
+                                .map(p -> (GrantedAuthority) () -> p)
+                                .toList();
                     }
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userPrincipal, null, grantedAuthorities);

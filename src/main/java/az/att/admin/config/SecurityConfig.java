@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static az.att.admin.enums.Module.VIEW_SETTINGS;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -35,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/access-token/set-role").authenticated()
                         .requestMatchers("/api/v1/roles/**").authenticated()
                         .requestMatchers("/api/v1/menus").authenticated()
+                        .requestMatchers("/v1/people/**").hasAuthority(VIEW_SETTINGS.name())
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .anyRequest().denyAll()
