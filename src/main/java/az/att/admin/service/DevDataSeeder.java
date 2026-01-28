@@ -14,7 +14,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -58,8 +61,7 @@ public class DevDataSeeder implements ApplicationRunner {
                     r.setPermissions(List.of(
                             permissionsByModule.get(Module.VIEW_DASHBOARD),
                             permissionsByModule.get(Module.VIEW_DEMANDS),
-                            permissionsByModule.get(Module.VIEW_SETTINGS)
-                    ));
+                            permissionsByModule.get(Module.VIEW_SETTINGS)));
 
                     return roleRepository.save(r);
                 });

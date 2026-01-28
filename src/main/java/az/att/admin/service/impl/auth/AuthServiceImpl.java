@@ -18,7 +18,7 @@ import az.att.admin.service.impl.auth.dto.OrganizationTokenResponseDto;
 import az.att.admin.service.impl.auth.dto.SimpleTokenResponseDto;
 import az.att.admin.service.impl.auth.dto.TokenResponseDto;
 import az.att.admin.service.impl.auth.dto.UserRoleRequestDto;
-import az.att.admin.service.impl.organization.Organization;
+import az.att.admin.service.impl.organization.dto.Organization;
 import az.att.admin.service.impl.roles.dto.PortalUserRole;
 import az.att.admin.service.impl.users.UserServiceImpl;
 import az.att.admin.service.impl.users.dto.PortalUser;
@@ -70,10 +70,11 @@ public class AuthServiceImpl implements AuthService {
     public OrganizationTokenResponseDto setOrganization(OrganizationSelectionRequestDto request,
                                                         UserPrincipal principal) {
         List<Organization> organizations = organizationService.findByUser(principal.getUserId());
-        if (organizations.stream().noneMatch(
-                organization -> request.getTin().equalsIgnoreCase(organization.getTin()))) {
-            throw new ApplicationException(CommonErrors.HTTP_401);
-        }
+        Organization selectedOrg = organizations.stream()
+                .filter(organization -> request.getTin().equalsIgnoreCase(organization.getTin()))
+                .findFirst()
+                .orElseThrow(() -> new ApplicationException(CommonErrors.HTTP_401));
+        principal.setHasStamp(selectedOrg.getHasStamp());
 
         List<PortalUserRole> userUserRoleList = userRoleService.findUserRoles(principal.getUserId(), request.getTin());
         return OrganizationTokenResponseDto.builder()

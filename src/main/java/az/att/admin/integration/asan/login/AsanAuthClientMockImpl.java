@@ -27,9 +27,9 @@ public class AsanAuthClientMockImpl implements AsanAuthClient {
     @Override
     public AsanJwtResponse parseToken(AsanLoginResponse asanLoginResponse) {
         return AsanJwtResponse.builder()
-                .sub("123456789")
+                .sub("f1a2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d")
                 .user(UserJwtDto.builder()
-                        .pin("525GRGH")
+                        .pin("7A1B2C3")
                         .firstName("Ilham")
                         .lastName("Safarov")
                         .patronymic("Habil")

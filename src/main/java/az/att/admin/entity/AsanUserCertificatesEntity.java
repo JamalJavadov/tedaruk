@@ -54,5 +54,9 @@ public class AsanUserCertificatesEntity {
 
     @Column(name = "position")
     private String position;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
 }
 

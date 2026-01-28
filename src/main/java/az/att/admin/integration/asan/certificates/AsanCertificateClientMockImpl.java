@@ -30,9 +30,9 @@ public class AsanCertificateClientMockImpl implements AsanCertificatesClient {
                                 .build();
 
                 StructureDataDto structureData2 = StructureDataDto.builder()
-                                .voen("1001101113")
-                                .structureName("XYZ Məhsulları LTD")
-                                .position("Mənədr")
+                                .voen("1401102213")
+                                .structureName("Tedaruk Test MMC")
+                                .position("1-Direktor")
                                 .hasStamp(true)
                                 .legal(true)
                                 .certificateNumber("100000002")

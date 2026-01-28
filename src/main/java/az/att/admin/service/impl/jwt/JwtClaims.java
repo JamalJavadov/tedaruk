@@ -13,5 +13,6 @@ public final class JwtClaims {
     public static final String SUBJECT = "sub";
     public static final String TIN = "tin";
     public static final String PERMISSIONS = "permissions";
+    public static final String HAS_STAMP = "hasStamp";
 }
 

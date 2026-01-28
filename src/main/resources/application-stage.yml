@@ -14,3 +14,7 @@ mygovid:
     url: https://apitest.mygovid.gov.az/ssoauth/oauth2/jwks
   base-auth-url: https://mygovid.gov.az/grant-permission
 scope: openid certificate session
+iamas:
+  bridge:
+    token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb24iOiI2OTREODg4Ni1FNkMzLTQxMTgtQTNERC02M0RCMjZGODBFMDIiLCJzaG9ydF9uYW1lIjoiYXR0X2t0bl90ZXN0IiwiaWRlbnRpdHkiOiI0NzJDMUI3MS0wQ0QwLTQ1RDEtOTZFRS1FRDdENjA4OTRGRjIiLCJleHBpcmUiOjE2NDg1MzUwNTcsInZlcnNpb24iOjF9.YV2OjyxJBZINu9Vp1gv5546nvwU10o8GYW92K--V5Pc
+    url: https://bridge-proxy-att-staging.e-gov.az/api/15/F9F64A30-5759-4296-AC9C-E4A7FC1DA93F/getIdCardList

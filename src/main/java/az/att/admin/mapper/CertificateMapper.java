@@ -11,10 +11,15 @@ public interface CertificateMapper {
 
     @Mapping(target = "asanUser", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tin", source = "voen")
+    @Mapping(target = "organization", ignore = true)
     AsanUserCertificatesEntity toEntity(CertificateData dto);
+
 
     @Mapping(target = "asanUser", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tin", source = "voen")
+    @Mapping(target = "organization", ignore = true)
     void updateEntityFromDto(CertificateData dto, @MappingTarget AsanUserCertificatesEntity entity);
 
 }

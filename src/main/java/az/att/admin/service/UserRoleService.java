@@ -10,4 +10,6 @@ public interface UserRoleService {
     List<PortalUserRole> findUserRoles(String userId, String tin);
 
     List<String> findPermissions(Long roleId);
+
+
 }

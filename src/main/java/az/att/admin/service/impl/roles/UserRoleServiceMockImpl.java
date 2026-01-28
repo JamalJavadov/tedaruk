@@ -20,4 +20,5 @@ public class UserRoleServiceMockImpl implements UserRoleService {
     public List<String> findPermissions(Long roleId) {
         return List.of("VIEW_SETTINGS");
     }
+
 }

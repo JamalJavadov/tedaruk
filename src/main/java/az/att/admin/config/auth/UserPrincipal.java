@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserPrincipal implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String pin;
@@ -22,4 +24,5 @@ public class UserPrincipal implements Serializable {
     private String userId;
     private List<String> permissions;
     private String tin;
+    private Boolean hasStamp;
 }

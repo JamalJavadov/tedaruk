@@ -13,8 +13,12 @@ import az.att.admin.service.impl.users.dto.PortalUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import az.att.admin.entity.Organization;
+import az.att.admin.repository.OrganizationRepository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -24,8 +28,9 @@ public class UserCertificateServiceImpl {
     private final UserDetailRepository userDetailRepository;
     private final UserMapper userMapper;
     private final CertificateMapper certificateMapper;
+    private final OrganizationRepository organizationRepository;
 
-    //@ToDo: this should be in asan probably
+    // @ToDo: this should be in asan probably
     public List<CertificateDto> filterValidCertificates(AsanCertificatesResponseDto response) {
         if (response.getCertificates() == null) {
             return List.of();
@@ -38,7 +43,7 @@ public class UserCertificateServiceImpl {
                 .toList();
     }
 
-    //@ToDo: fix thi section use organization
+    // @ToDo: fix thi section use organization
     public void saveUserCertificates(PortalUser user, List<CertificateDto> certificates) {
         for (CertificateDto cert : certificates) {
             StructureDataDto structureData = cert.getStructureData();
@@ -59,6 +64,23 @@ public class UserCertificateServiceImpl {
                 });
 
         certificateMapper.updateEntityFromDto(certificateData, certificate);
+        Optional<Organization> organizationOpt = organizationRepository
+                .findOrganizationByTin(certificateData.getVoen());
+        if (organizationOpt.isPresent()) {
+            // If the Organizations already exsists
+            certificate.setOrganization(organizationOpt.get());
+        } else if (Boolean.TRUE.equals(certificateData.getHasStamp())
+                && StringUtils.hasText(certificateData.getPosition())
+                && certificateData.getPosition().startsWith("1")) {
+            // There is no organization, but there is a seal...
+            Organization newOrg = Organization.builder()
+                    .tin(certificateData.getVoen())
+                    .name(certificateData.getStructureName())
+                    .build();
+            Organization savedOrg = organizationRepository.save(newOrg);
+            certificate.setOrganization(savedOrg);
+        }
+
         userDetailRepository.save(certificate);
     }
 
