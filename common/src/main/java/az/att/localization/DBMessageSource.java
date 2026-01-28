@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.Optional;
 
 /*
 import static az.ingress.common.localization.LocalizationMessagesToDbLoader.DEFAULT_LOCALE_CODE;

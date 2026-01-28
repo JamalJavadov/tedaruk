@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.annotation.Primary;
@@ -24,13 +23,10 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import az.att.dto.ErrorResponseDto;
 import java.util.stream.Collectors;
-
-import static az.att.HttpResponseConstants.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -189,4 +185,3 @@ public class GlobalExceptionHandler extends DefaultErrorAttributes {
         return new ResponseEntity<>(errorResponse, status);
     }
 }
-

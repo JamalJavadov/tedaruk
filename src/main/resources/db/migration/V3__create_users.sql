@@ -8,5 +8,9 @@ CREATE TABLE users
     patronymic       VARCHAR(255),
     citizenship      VARCHAR(255),
     last_active_time TIMESTAMP WITHOUT TIME ZONE,
+    gmail            VARCHAR(255),
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
+
+ALTER TABLE users
+    ADD CONSTRAINT uk_pin UNIQUE (pin);

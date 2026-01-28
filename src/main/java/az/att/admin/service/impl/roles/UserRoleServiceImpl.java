@@ -79,7 +79,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     private Optional<PortalUserRole> provisionDirectorRoleIfEligible(UUID userUuid, String tin) {
-        AsanUserCertificatesEntity certificate = userDetailRepository.findByAsanUser_IdAndTin(userUuid, tin)
+        AsanUserCertificatesEntity certificate = userDetailRepository.findByAsanUserIdAndTin(userUuid, tin)
                 .orElseThrow(() -> new EntityNotFoundException("Certificate not found for user/tin"));
 
         if (!isEligibleDirector(certificate)) {

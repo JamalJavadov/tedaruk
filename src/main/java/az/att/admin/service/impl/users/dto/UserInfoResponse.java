@@ -1,29 +1,26 @@
-package az.att.admin.config.auth;
+package az.att.admin.service.impl.users.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPrincipal implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class UserInfoResponse {
 
     private String pin;
     private String firstName;
     private String lastName;
     private String userId;
-    private List<String> permissions;
     private String tin;
-    private Boolean hasStamp;
+    private List<String> permissions;
     private String mainRole;
+    private String position;
+    private String digitalPhoneNumber;
+    private String gmail;
 }

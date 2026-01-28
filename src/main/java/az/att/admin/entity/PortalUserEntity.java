@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,4 +52,7 @@ public class PortalUserEntity {
 
     @Column(name = "last_active_time")
     private LocalDateTime lastActiveTime;
+
+    @Email
+    private String gmail;
 }

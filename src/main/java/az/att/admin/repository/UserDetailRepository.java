@@ -14,7 +14,7 @@ public interface UserDetailRepository extends JpaRepository<AsanUserCertificates
 
     Optional<AsanUserCertificatesEntity> findByAsanUserAndTin(PortalUserEntity asanUser, String tin);
     List<AsanUserCertificatesEntity> findAllByAsanUserId(UUID asanUserId);
-    Optional<AsanUserCertificatesEntity> findByAsanUser_IdAndTin(UUID userId, String tin);
+    Optional<AsanUserCertificatesEntity> findByAsanUserIdAndTin(UUID userId, String tin);
 
 }
 

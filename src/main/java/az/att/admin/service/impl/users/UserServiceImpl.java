@@ -1,7 +1,11 @@
 package az.att.admin.service.impl.users;
 
+import az.att.admin.config.auth.UserPrincipal;
+import az.att.admin.service.impl.users.dto.UserInfoResponse;
+import az.att.admin.entity.AsanUserCertificatesEntity;
 import az.att.admin.entity.PortalUserEntity;
 import az.att.admin.integration.asan.login.dto.AsanJwtResponse;
+import az.att.admin.repository.UserDetailRepository;
 import az.att.admin.repository.UserLoginRepository;
 import az.att.admin.service.UserService;
 import az.att.admin.service.impl.users.dto.PortalUser;
@@ -14,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private static final ZoneId BAKU_ZONE = ZoneId.of("Asia/Baku");
     private final UserMapper userMapper;
     private final UserLoginRepository userLoginRepository;
+    private final UserDetailRepository userDetailRepository;
 
     @Override
     public PortalUser createOrUpdateUser(AsanJwtResponse payload, String phone) {
@@ -35,6 +42,32 @@ public class UserServiceImpl implements UserService {
         user.setLastActiveTime(LocalDateTime.now(BAKU_ZONE));
         PortalUserEntity portalUserEntity = userLoginRepository.save(user);
         return userMapper.toDto(portalUserEntity);
+    }
+
+    @Override
+    public UserInfoResponse getUserInfo(UserPrincipal userPrincipal) {
+        String pin = userPrincipal.getPin();
+        String tin = userPrincipal.getTin();
+        UUID userId = UUID.fromString(userPrincipal.getUserId());
+
+        PortalUserEntity portalUser = userLoginRepository.findByPin(pin).orElse(null);
+
+        AsanUserCertificatesEntity certificate = userDetailRepository
+                .findByAsanUserIdAndTin(userId, tin)
+                .orElse(null);
+
+        return UserInfoResponse.builder()
+                .pin(pin)
+                .firstName(userPrincipal.getFirstName())
+                .lastName(userPrincipal.getLastName())
+                .userId(userPrincipal.getUserId())
+                .tin(tin)
+                .permissions(userPrincipal.getPermissions())
+                .mainRole(userPrincipal.getMainRole())
+                .position(certificate != null ? certificate.getPosition() : null)
+                .digitalPhoneNumber(portalUser != null ? portalUser.getPhoneNumber() : null)
+                .gmail(portalUser != null? portalUser.getGmail() : null)
+                .build();
     }
 
     private void validateUserPayload(AsanJwtResponse payload) {
