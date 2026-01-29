@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Entity
-@Table(name = "user_role")
+@Table(name="user_role", schema="att_user_db")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

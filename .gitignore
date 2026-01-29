@@ -129,3 +129,6 @@ Dockerfile
 
 .gitattributes
 .gitignore
+
+compilation_error.txt
+compilation_error_jdk21.txt
