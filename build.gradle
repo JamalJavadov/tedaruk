@@ -12,8 +12,24 @@ checkstyle {
 }
 
 pmd {
+    toolVersion = "7.0.0" // or keep your existing version if defined elsewhere
     ruleSets = []
     ruleSetFiles = files("$rootDir/config/pmd/ruleset.xml")
+}
+
+tasks.withType(Pmd).configureEach {
+    reports {
+        xml.required.set(false)
+        html.required.set(false)
+        sarif.required.set(false)
+
+        codeclimate {
+            required.set(true)
+            outputLocation.set(
+                file("$buildDir/reports/pmd/codeclimate.json")
+            )
+        }
+    }
 }
 
 apply from: "common/gradle/common.gradle"

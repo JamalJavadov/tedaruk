@@ -1,7 +1,5 @@
 package az.att.admin.service.impl.users;
 
-import az.att.admin.config.auth.UserPrincipal;
-import az.att.admin.service.impl.users.dto.UserInfoResponse;
 import az.att.admin.entity.AsanUserCertificatesEntity;
 import az.att.admin.entity.PortalUserEntity;
 import az.att.admin.integration.asan.login.dto.AsanJwtResponse;
@@ -9,6 +7,9 @@ import az.att.admin.repository.UserDetailRepository;
 import az.att.admin.repository.UserLoginRepository;
 import az.att.admin.service.UserService;
 import az.att.admin.service.impl.users.dto.PortalUser;
+import az.att.admin.service.impl.users.dto.UserContactUpdateRequest;
+import az.att.admin.config.auth.UserPrincipal;
+import az.att.admin.service.impl.users.dto.UserInfoResponse;
 import az.att.exception.ApplicationException;
 import az.att.exception.CommonErrors;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-
 import java.util.UUID;
 
 @Slf4j
@@ -66,13 +66,51 @@ public class UserServiceImpl implements UserService {
                 .mainRole(userPrincipal.getMainRole())
                 .position(certificate != null ? certificate.getPosition() : null)
                 .digitalPhoneNumber(portalUser != null ? portalUser.getPhoneNumber() : null)
-                .gmail(portalUser != null? portalUser.getGmail() : null)
+                .gmail(portalUser != null ? portalUser.getGmail() : null)
                 .build();
+    }
+
+    @Override
+    public PortalUser updateUserContact(UserPrincipal userPrincipal, UserContactUpdateRequest request) {
+        UUID userId = resolveUserId(userPrincipal);
+        PortalUserEntity user = findUser(userId);
+        applyContactUpdate(user, request);
+        return userMapper.toDto(userLoginRepository.save(user));
     }
 
     private void validateUserPayload(AsanJwtResponse payload) {
         if (payload.getUser() == null || payload.getUser().getPin() == null) {
             throw new ApplicationException(CommonErrors.ENTITY_NOT_FOUND);
+        }
+    }
+
+    private UUID resolveUserId(UserPrincipal userPrincipal) {
+        if (userPrincipal == null || userPrincipal.getUserId() == null) {
+            throw new ApplicationException(CommonErrors.HTTP_401);
+        }
+
+        try {
+            return UUID.fromString(userPrincipal.getUserId());
+        } catch (IllegalArgumentException ex) {
+            throw new ApplicationException(CommonErrors.ENTITY_NOT_FOUND);
+        }
+    }
+
+    private PortalUserEntity findUser(UUID userId) {
+        return userLoginRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(CommonErrors.ENTITY_NOT_FOUND));
+    }
+
+    private void applyContactUpdate(PortalUserEntity user, UserContactUpdateRequest request) {
+        if (request == null) {
+            return;
+        }
+
+        if (request.getDigitalPhoneNumber() != null) {
+            user.setPhoneNumber(request.getDigitalPhoneNumber());
+        }
+        if (request.getGmail() != null) {
+            user.setGmail(request.getGmail());
         }
     }
 
