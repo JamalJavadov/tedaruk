@@ -20,5 +20,6 @@ CREATE TABLE organizations
     ownership_type_id      INTEGER DEFAULT 100 NOT NULL,
     visible_on_public      BOOLEAN DEFAULT TRUE NOT NULL,
     is_first_entry         BOOLEAN DEFAULT TRUE NOT NULL,
-    CONSTRAINT pk_organizations PRIMARY KEY (id)
+    CONSTRAINT pk_organizations PRIMARY KEY (id),
+    CONSTRAINT uk_organizations_tin UNIQUE (tin)
 );

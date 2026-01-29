@@ -1,14 +1,14 @@
--- Database və schema yaradılması
+﻿-- Create database and schema
 CREATE DATABASE att_tedaruk_db;
 
 \c att_tedaruk_db;
 
--- Schema yaradılması
+-- Create schema
 CREATE SCHEMA IF NOT EXISTS att_user_db;
 
--- Default schema təyin edilməsi
+-- Set default schema search path
 SET search_path TO att_user_db, public;
 
--- İcazələr
+-- Grants
 GRANT ALL PRIVILEGES ON DATABASE att_tedaruk_db TO postgres;
 GRANT ALL PRIVILEGES ON SCHEMA att_user_db TO postgres;
