@@ -34,6 +34,9 @@ public class PortalUserEntity {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "gmail")
+    private String gmail;
+
     @Column(name = "pin")
     private String pin;
 

@@ -31,7 +31,7 @@ public class SecurityConfig {
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/me").authenticated()
+                        .requestMatchers("/api/v1/users/**").authenticated()
                         .requestMatchers("/auth/sign-in").permitAll()
                         .requestMatchers("/auth/access-token/set-organization").authenticated()
                         .requestMatchers("/auth/access-token/set-role").authenticated()

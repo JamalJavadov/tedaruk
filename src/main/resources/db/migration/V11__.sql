@@ -1,0 +1,16 @@
+ALTER TABLE users
+    ADD gmail VARCHAR(255);
+
+ALTER TABLE asan_user_certificates
+    ADD CONSTRAINT FK_ASAN_USER_CERTIFICATES_ON_USER_LOGIN FOREIGN KEY (user_login_id) REFERENCES users (id);
+
+ALTER TABLE organizations
+ALTER
+COLUMN about TYPE VARCHAR(255) USING (about::VARCHAR(255));
+
+ALTER TABLE organizations
+    ALTER COLUMN name SET NOT NULL;
+
+ALTER TABLE organizations
+ALTER
+COLUMN tin TYPE VARCHAR(10) USING (tin::VARCHAR(10));
