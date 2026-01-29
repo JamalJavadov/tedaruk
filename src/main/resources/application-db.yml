@@ -1,9 +1,9 @@
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: &connectionUrl jdbc:postgresql://${DB_CONNECTION_IP:localhost}:${DB_CONNECTION_PORT:5432}/${DB_NAME:att}?currentSchema=${DB_SCHEMA:att_user_db}
+    url: &connectionUrl jdbc:postgresql://${DB_CONNECTION_IP:localhost}:${DB_CONNECTION_PORT:5432}/${DB_NAME:att}?currentSchema=${DB_SCHEMA:att}
     username: postgres
-    password: Cavadov15.
+    password: password
     driver-class-name: org.postgresql.Driver
 
   jpa:
