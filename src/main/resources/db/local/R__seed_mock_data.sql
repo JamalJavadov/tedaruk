@@ -1,23 +1,35 @@
 ﻿-- Ensure unique constraints exist for idempotent seeding
 DO $$
 BEGIN
-    ALTER TABLE organizations ADD CONSTRAINT uk_organizations_tin UNIQUE (tin);
-EXCEPTION
-    WHEN duplicate_object THEN NULL;
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'uk_organizations_tin'
+    ) THEN
+        ALTER TABLE organizations ADD CONSTRAINT uk_organizations_tin UNIQUE (tin);
+    END IF;
 END $$;
 
 DO $$
 BEGIN
-    ALTER TABLE users ADD CONSTRAINT uk_users_pin UNIQUE (pin);
-EXCEPTION
-    WHEN duplicate_object THEN NULL;
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'uk_users_pin'
+    ) THEN
+        ALTER TABLE users ADD CONSTRAINT uk_users_pin UNIQUE (pin);
+    END IF;
 END $$;
 
 DO $$
 BEGIN
-    ALTER TABLE asan_user_certificates ADD CONSTRAINT uk_user_voen UNIQUE (user_login_id, voen);
-EXCEPTION
-    WHEN duplicate_object THEN NULL;
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'uk_user_voen'
+    ) THEN
+        ALTER TABLE asan_user_certificates ADD CONSTRAINT uk_user_voen UNIQUE (user_login_id, voen);
+    END IF;
 END $$;
 
 -- Seed Permissions (from Module enum)
