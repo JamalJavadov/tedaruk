@@ -11,6 +11,7 @@ import java.util.UUID;
 public class PortalUser {
     private UUID id;
     private String phoneNumber;
+    private String gmail;
     private String pin;
     private String firstName;
     private String lastName;
