@@ -53,7 +53,7 @@ static-analysis:
   script:
   
     # 1️⃣ Install xsltproc (ONLY missing dependency)
-    - apt-get update && apt-get install -y libxslt1-dev
+    - apt-get update && apt-get install -y xsltproc
 
     # 2️⃣ Run checks but DO NOT fail the job yet
     - ./gradlew --no-daemon check --console=plain --warning-mode=all || true
