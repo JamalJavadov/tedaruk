@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Slf4j
 @Component
-@Profile("!local")
+@Profile("local")
 @RequiredArgsConstructor
 public class IamasClientImpl implements IamasClient {
 

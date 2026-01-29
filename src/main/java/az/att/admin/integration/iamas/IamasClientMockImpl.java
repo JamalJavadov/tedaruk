@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-@Profile("local")
+@Profile("!local")
 public class IamasClientMockImpl implements IamasClient {
 
     @Override

@@ -4,6 +4,10 @@ import az.att.admin.entity.AsanUserCertificatesEntity;
 import az.att.admin.entity.PortalUserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +20,10 @@ public interface UserDetailRepository extends JpaRepository<AsanUserCertificates
     List<AsanUserCertificatesEntity> findAllByAsanUserId(UUID asanUserId);
     Optional<AsanUserCertificatesEntity> findByAsanUserIdAndTin(UUID userId, String tin);
 
-}
+    @Query("select distinct c.asanUser from AsanUserCertificatesEntity c " +
+            "where c.tin = :tin and c.asanUser.deleted = false")
+    Page<PortalUserEntity> findActiveUsersByTin(@Param("tin") String tin, Pageable pageable);
 
+}
 
 

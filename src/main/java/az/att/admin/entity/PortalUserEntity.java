@@ -55,4 +55,8 @@ public class PortalUserEntity {
 
     @Column(name = "last_active_time")
     private LocalDateTime lastActiveTime;
+
+    @Builder.Default
+    @Column(name = "deleted")
+    private boolean deleted = false;
 }

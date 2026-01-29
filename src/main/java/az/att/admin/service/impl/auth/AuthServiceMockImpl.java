@@ -83,7 +83,7 @@ public class AuthServiceMockImpl extends AuthServiceImpl {
 
     private TokenResponseDto mockSignIn(String pin) {
         log.info("Performing mock sign-in for PIN: {}", pin);
-        PortalUserEntity userEntity = userLoginRepository.findByPin(pin)
+        PortalUserEntity userEntity = userLoginRepository.findByPinAndDeletedFalse(pin)
                 .orElseThrow(() -> new ApplicationException(CommonErrors.ENTITY_NOT_FOUND));
 
         PortalUser portalUser = userMapper.toDto(userEntity);
