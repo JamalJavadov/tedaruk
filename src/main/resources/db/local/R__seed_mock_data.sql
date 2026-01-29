@@ -1,4 +1,26 @@
-﻿-- Seed Permissions (from Module enum)
+﻿-- Ensure unique constraints exist for idempotent seeding
+DO $$
+BEGIN
+    ALTER TABLE organizations ADD CONSTRAINT uk_organizations_tin UNIQUE (tin);
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+    ALTER TABLE users ADD CONSTRAINT uk_users_pin UNIQUE (pin);
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+    ALTER TABLE asan_user_certificates ADD CONSTRAINT uk_user_voen UNIQUE (user_login_id, voen);
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
+
+-- Seed Permissions (from Module enum)
 INSERT INTO permissions (name, label, created_by, created_on, last_modified_by, last_modified_on)
 VALUES ('VIEW_DASHBOARD', 'İdarəetmə paneli', 'system', NOW(), 'system', NOW()),
        ('VIEW_PRODUCTS', 'Məhsullar', 'system', NOW(), 'system', NOW()),
@@ -108,4 +130,3 @@ VALUES (1, (SELECT id FROM asan_user_certificates WHERE certificat_number = 'CER
        (5, (SELECT id FROM asan_user_certificates WHERE certificat_number = 'CERT-0002' LIMIT 1), '2002202223'),
        (9, (SELECT id FROM asan_user_certificates WHERE certificat_number = 'CERT-0003' LIMIT 1), '3003303334')
 ON CONFLICT DO NOTHING;
-

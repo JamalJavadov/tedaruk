@@ -8,4 +8,4 @@ CREATE TABLE languages
 );
 
 ALTER TABLE languages
-    ADD CONSTRAINT uc_languages_locale_message_key UNIQUE (locale, message_key);
+    ADD CONSTRAINT uc_7a3b91cd1ccc67f2c969b15e0 UNIQUE (locale, message_key);

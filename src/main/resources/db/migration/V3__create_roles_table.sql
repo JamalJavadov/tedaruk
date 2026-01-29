@@ -13,5 +13,5 @@ CREATE TABLE roles
 );
 
 ALTER TABLE roles
-    ADD CONSTRAINT fk_roles_on_organization
+    ADD CONSTRAINT FK_ROLES_ON_ORGANIZATION
         FOREIGN KEY (organization_id) REFERENCES organizations (id);
