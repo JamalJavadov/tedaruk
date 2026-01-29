@@ -26,7 +26,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Profile("local")
 public class UserRoleServiceImpl implements UserRoleService {
 
     private static final String DIRECTOR_ROLE_NAME = "Möhür Səlahiyyətli";
@@ -150,7 +149,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     private PortalUserRole toPortalUserRole(UserRole userRole) {
-        return new PortalUserRole(userRole.getId(), userRole.getRole().getName());
+        return new PortalUserRole(userRole.getRole().getId(), userRole.getRole().getName());
     }
 
 
