@@ -55,7 +55,4 @@ public class PortalUserEntity {
 
     @Column(name = "last_active_time")
     private LocalDateTime lastActiveTime;
-
-    @Email
-    private String gmail;
 }
